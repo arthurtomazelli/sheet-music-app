@@ -46,6 +46,12 @@ def main():
     extra_beat = Beat(Duration.QUARTER)
     print("Trying to add one more (should be False):", measure.add_rhythmic_event(extra_beat))
 
+    # --- Test Track.get_pitch ---
+    print("\nTesting get_pitch:")
+    print("beat1 note (string=0, fret=0) ->", guitar_track.get_pitch(beat1.notes[0]))
+    print("Expected to match the open pitch of string 0:", guitar_track.tuning[0])
+    print("beat2 note (string=1, fret=2) ->", guitar_track.get_pitch(beat2.notes[0]))
+
     # --- Test Song + Track relationship ---
     song = Song("Wonderwall", "Oasis", 87)
     song.tracks.append(guitar_track)
