@@ -1,9 +1,9 @@
-from domain.enum.Tuning import InstrumentTuning
+from domain.enum.InstrumentTuning import InstrumentTuning
 from domain.constant.CHROMATIC_SCALE import chromatic_scale
 
 
 class Track:
-    def __init__(self, name, instrument: InstrumentTuning):
+    def __init__(self, name: str, instrument: InstrumentTuning):
         self.name = name
         self.instrument = instrument
         self.tuning = instrument.value.copy()
