@@ -1,6 +1,7 @@
 from enum import Enum
 from fractions import Fraction
 
+
 class Duration(Enum):
     WHOLE = Fraction(1, 1)
     HALF = Fraction(1, 2)
