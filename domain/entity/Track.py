@@ -1,0 +1,28 @@
+from domain.enum.Tuning import InstrumentTuning
+from domain.constant.CHROMATIC_SCALE import chromatic_scale
+
+class Track:
+    def __init__(self, name, instrument: InstrumentTuning):
+        self.name = name
+        self.instrument = instrument
+        self.tuning = instrument.value.copy()
+        self.measures = []
+
+    def down_tune(self):
+        self.change_tuning(-1)
+
+    def up_tune(self):
+        self.change_tuning(1)
+
+    def change_tuning(self, change):
+        for i, note in enumerate(self.tuning):
+            self.shift_note(i, note, change)
+
+    def drop_tune(self):
+        last_string_index = len(self.tuning) - 1
+        note = self.tuning[last_string_index]
+
+        self.shift_note(last_string_index, note, -2)
+
+    def shift_note(self, index, note, shift):
+        self.tuning[index] = chromatic_scale[(chromatic_scale.index(note) + shift) % 12]
