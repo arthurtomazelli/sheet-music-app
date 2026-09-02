@@ -43,7 +43,7 @@ tests/
 The core domain model is complete, including pitch resolution and full JSON serialization, all manually verified end-to-end (tuning shifts, measure validation, pitch calculation, and a load → deserialize → serialize → save round-trip that matches the original data exactly):
 
 - **Duration** — modeled as an `Enum` wrapping `Fraction` values, so summing durations produces musically correct results (e.g. `1/4 + 1/16 = 5/16`).
-- **Pitch** — an immutable `NamedTuple` (`name`, `index`) representing a note on the chromatic scale. Only constructible through `from_name`, `from_index`, or `from_name_list`, which always compute both fields consistently — avoiding the risk of a name/index pair going out of sync. `Pitch.shift(pitch, semitones)` handles wraparound arithmetic and is the single source of truth for moving a note up or down the scale.
+- **Pitch** — an immutable `NamedTuple` (`name`, `index`, `octave`) representing a specific note on the chromatic scale, at a specific octave. Only constructible through `from_name`, `from_index`, or `from_name_list`, which always compute `index` from `name` consistently — avoiding the risk of a name/index pair going out of sync. `octave` is always required explicitly (never guessed), since it can't be derived from a note name alone. `Pitch.shift(pitch, semitones)` handles wraparound arithmetic in both directions — using floor division on the pre-modulo index sum to correctly track octave crossings — and is the single source of truth for moving a note up or down the scale, used identically by fret-based pitch lookups and by tuning changes.
 - **Note** — stores only `string` and `fret`. Pitch is resolved on demand via `Track.get_pitch(note)`, which looks up the open-string `Pitch` for that string and applies the fret offset through `Pitch.shift()` — nothing is stored redundantly on `Note` itself.
 - **RhythmicEvent** — now an abstract base class (`ABC`), guaranteeing every subclass implements `to_dict()`. `Beat` (notes sounding together) and `Rest` (silence) both inherit from it, so a `Measure` can hold a single, uniformly-typed sequence of either.
 - **Measure** — holds a `TimeSignature` and validates that the sum of its rhythmic events' durations never exceeds it; `add_rhythmic_event()` returns `bool` to signal acceptance/rejection, and the internal list is only accessible through `add_rhythmic_event()` (write) and `get_rhythmic_events()` (read, returns a copy). This validation runs the same way whether a `Measure` is built manually or from JSON.
@@ -53,13 +53,12 @@ The core domain model is complete, including pitch resolution and full JSON seri
 
 ## Roadmap
 
-- [ ] Add octave to `Pitch`, so pitches climb correctly across the fretboard instead of wrapping within a single octave
-- [ ] Tab text parser → domain model
-- [ ] Domain model → MusicXML / tab rendering
 - [ ] Automated tests (pytest) for tuning shifts, measure validation, pitch conversion, and JSON round-tripping
-- [ ] FastAPI service exposing parsing/conversion
+- [ ] Domain model → MusicXML / tab rendering
+- [ ] FastAPI service exposing parsing/conversion (structured JSON in/out — matches how the frontend will create tabs)
 - [ ] Supabase integration (auth, persistence, storage)
 - [ ] Frontend rendering (tab + standard notation)
+- [ ] ASCII tab text parser → domain model (deferred: needed only for importing existing tabs from external sources; the frontend's own tab-creation flow already produces structured JSON directly, no text parsing involved)
 
 ## Design Notes
 
