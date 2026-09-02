@@ -1,0 +1,46 @@
+{
+  "title": "Test Song",
+  "artist": "Test Artist",
+  "bpm": 120,
+  "tracks": [
+    {
+      "name": "Guitar",
+      "instrument": "GUITAR",
+      "measures": [
+        {
+          "time_signature": {
+            "numerator": 4,
+            "denominator": 4
+          },
+          "rhythmic_events": [
+            {
+              "type": "BEAT",
+              "duration": "QUARTER",
+              "notes": [
+                { "string": 0, "fret": 0 }
+              ]
+            },
+            {
+              "type": "REST",
+              "duration": "QUARTER"
+            },
+            {
+              "type": "BEAT",
+              "duration": "HALF",
+              "notes": [
+                { "string": 1, "fret": 2 },
+                { "string": 2, "fret": 3 }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Drop D Guitar",
+      "instrument": "GUITAR",
+      "tuning": ["E", "B", "G", "D", "A", "D"],
+      "measures": []
+    }
+  ]
+}
