@@ -41,7 +41,7 @@ class Track:
         return cls(name=data["name"],
                    measures=[Measure.from_dict(m) for m in data["measures"]],
                    instrument=InstrumentTuning[data["instrument"]],
-                   tuning=[Pitch.from_name(n) for n in data["tuning"]] if "tuning" in data else None
+                   tuning=[Pitch.from_dict(pitch_dict) for pitch_dict in data["tuning"]] if "tuning" in data else None
         )
 
     def to_dict(self) -> dict:
@@ -52,6 +52,6 @@ class Track:
         }
 
         if self.tuning != self.instrument.value:
-            data["tuning"] = [pitch.name for pitch in self.tuning]
+            data["tuning"] = [pitch.to_dict() for pitch in self.tuning]
 
         return data
