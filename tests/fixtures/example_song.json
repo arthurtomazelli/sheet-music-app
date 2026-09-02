@@ -39,7 +39,14 @@
     {
       "name": "Drop D Guitar",
       "instrument": "GUITAR",
-      "tuning": ["E", "B", "G", "D", "A", "D"],
+      "tuning": [
+        { "name": "E", "octave": 4 },
+        { "name": "B", "octave": 3 },
+        { "name": "G", "octave": 3 },
+        { "name": "D", "octave": 3 },
+        { "name": "A", "octave": 2 },
+        { "name": "D", "octave": 2 }
+      ],
       "measures": []
     }
   ]
