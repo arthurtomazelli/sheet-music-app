@@ -43,3 +43,15 @@ class Track:
                    instrument=InstrumentTuning[data["instrument"]],
                    tuning=[Pitch.from_name(n) for n in data["tuning"]] if "tuning" in data else None
         )
+
+    def to_dict(self) -> dict:
+        data: dict = {
+            "name": self.name,
+            "measures": [measure.to_dict() for measure in self.measures],
+            "instrument": self.instrument.name,
+        }
+
+        if self.tuning != self.instrument.value:
+            data["tuning"] = [pitch.name for pitch in self.tuning]
+
+        return data

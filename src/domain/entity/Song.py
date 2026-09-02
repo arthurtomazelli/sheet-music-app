@@ -17,3 +17,10 @@ class Song:
                    bpm=data["bpm"],
                    tracks=[Track.from_dict(t) for t in data["tracks"]]
         )
+
+    def to_dict(self) -> dict:
+        return {"title": self.title,
+                "artist": self.artist,
+                "bpm": self.bpm,
+                "tracks": [track.to_dict() for track in self.tracks]
+        }

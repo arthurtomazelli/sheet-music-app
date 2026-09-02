@@ -8,3 +8,6 @@ class TimeSignature(NamedTuple):
     @classmethod
     def from_dict(cls, data: dict) -> "TimeSignature":
         return cls(numerator=data["numerator"], denominator=data["denominator"])
+
+    def to_dict(self) -> dict:
+        return {"numerator": self.numerator, "denominator": self.denominator}

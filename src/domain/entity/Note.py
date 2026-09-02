@@ -6,3 +6,6 @@ class Note:
     @classmethod
     def from_dict(cls, data: dict ) -> "Note":
         return cls(string=data["string"], fret=data["fret"])
+
+    def to_dict(self) -> dict:
+        return {"string": self.string, "fret": self.fret}

@@ -1,65 +1,55 @@
-from domain.entity.Beat import Beat
-from domain.entity.Measure import Measure
-from domain.entity.Note import Note
-from domain.entity.Song import Song
-from domain.entity.Track import Track
-from domain.enum.InstrumentTuning import InstrumentTuning
-from domain.value_object.Duration import Duration
-from domain.value_object.TimeSignature import TimeSignature
+import json
+
+from src.domain.entity.Song import Song
 
 
 def main():
-    # --- Test Track + Pitch tuning shifts ---
-    guitar_track = Track("My Track", InstrumentTuning.GUITAR)
-    print("Initial tuning:", guitar_track.tuning)
+    input_path = "../tests/fixtures/example_song.json"
+    output_path = "../tests/fixtures/example_song_roundtrip.json"
 
-    # down_tune shifts ALL strings by one semitone
-    guitar_track.down_tune()
-    print("After down_tune (all strings shift):", guitar_track.tuning)
+    # --- Load (from_dict) ---
+    with open(input_path) as f:
+        data = json.load(f)
 
-    guitar_track.up_tune()
-    print("After up_tune (should match initial tuning again):", guitar_track.tuning)
+    song = Song.from_dict(data)
 
-    # drop_tune only shifts the lowest string, by 2 semitones (e.g. standard -> drop D)
-    guitar_track.drop_tune()
-    print("After drop_tune (only lowest string shifts):", guitar_track.tuning)
+    print(f"Loaded song: '{song.title}' by {song.artist}, {song.bpm} BPM")
+    print(f"Number of tracks: {len(song.tracks)}")
 
-    # --- Test Measure + Beat + validation ---
-    measure = Measure(TimeSignature(4, 4))
+    for track in song.tracks:
+        print(f"\nTrack: '{track.name}' ({track.instrument.name})")
+        print(f"Tuning: {track.tuning}")
+        print(f"Number of measures: {len(track.measures)}")
 
-    beat1 = Beat(Duration.QUARTER)
-    beat1.notes.append(Note(string=0, fret=0))
+        for i, measure in enumerate(track.measures):
+            print(f"  Measure {i + 1} - time signature {measure.time_signature.numerator}/{measure.time_signature.denominator}")
+            print(f"  Sum of durations: {measure.sum_rhythmic_events_durations()}")
 
-    beat2 = Beat(Duration.QUARTER)
-    beat2.notes.append(Note(string=1, fret=2))
+            for event in measure.get_rhythmic_events():
+                if hasattr(event, "notes"):
+                    notes_info = [f"(string={n.string}, fret={n.fret})" for n in event.notes]
+                    pitches_info = [str(track.get_pitch(n)) for n in event.notes]
+                    print(f"    Beat ({event.duration.name}): {notes_info} -> {pitches_info}")
+                else:
+                    print(f"    Rest ({event.duration.name})")
 
-    beat3 = Beat(Duration.HALF)
-    beat3.notes.append(Note(string=2, fret=3))
+    # --- Save (to_dict) ---
+    round_trip_data = song.to_dict()
 
-    print("\nAdding beats to a 4/4 measure:")
-    print("Added beat1 (1/4):", measure.add_rhythmic_event(beat1))
-    print("Added beat2 (1/4):", measure.add_rhythmic_event(beat2))
-    print("Added beat3 (1/2):", measure.add_rhythmic_event(beat3))
-    print("Current sum:", measure.sum_rhythmic_events_durations())
+    with open(output_path, "w") as f:
+        json.dump(round_trip_data, f, indent=2)
 
-    # This one should be rejected — measure is already full (4/4 = 1)
-    extra_beat = Beat(Duration.QUARTER)
-    print("Trying to add one more (should be False):", measure.add_rhythmic_event(extra_beat))
+    print(f"\nSaved round-trip JSON to {output_path}")
 
-    # --- Test Track.get_pitch ---
-    print("\nTesting get_pitch:")
-    print("beat1 note (string=0, fret=0) ->", guitar_track.get_pitch(beat1.notes[0]))
-    print("Expected to match the open pitch of string 0:", guitar_track.tuning[0])
-    print("beat2 note (string=1, fret=2) ->", guitar_track.get_pitch(beat2.notes[0]))
+    # --- Compare original vs round-trip ---
+    with open(output_path) as f:
+        round_trip_check = json.load(f)
 
-    # --- Test Song + Track relationship ---
-    song = Song("Wonderwall", "Oasis", 87)
-    song.tracks.append(guitar_track)
-    guitar_track.measures.append(measure)
+    print("Round-trip matches original data:", data == round_trip_check)
 
-    print(f"\nSong '{song.title}' by {song.artist} at {song.bpm} BPM")
-    print(f"Track '{guitar_track.name}' has {len(guitar_track.measures)} measure(s)")
-    print(f"That measure has {len(measure._rhythmic_events)} rhythmic event(s)")
+    if data != round_trip_check:
+        print("Original: ", data)
+        print("Round-trip:", round_trip_check)
 
 
 if __name__ == "__main__":
