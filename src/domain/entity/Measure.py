@@ -1,8 +1,8 @@
 from fractions import Fraction
 from typing import List, Optional, Final
 
-from domain.entity.RhythmicEvent import RhythmicEvent
-from domain.value_object.TimeSignature import TimeSignature
+from src.domain.entity.RhythmicEvent import RhythmicEvent
+from src.domain.value_object.TimeSignature import TimeSignature
 
 
 class Measure:

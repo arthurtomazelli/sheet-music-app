@@ -1,4 +1,4 @@
-from domain.value_object.Duration import Duration
+from src.domain.value_object.Duration import Duration
 
 
 class RhythmicEvent:

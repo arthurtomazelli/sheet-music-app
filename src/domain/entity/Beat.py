@@ -1,8 +1,8 @@
 from typing import List
 
-from domain.entity.Note import Note
-from domain.entity.RhythmicEvent import RhythmicEvent
-from domain.value_object.Duration import Duration
+from src.domain.entity.Note import Note
+from src.domain.entity.RhythmicEvent import RhythmicEvent
+from src.domain.value_object.Duration import Duration
 
 
 class Beat(RhythmicEvent):

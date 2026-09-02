@@ -1,6 +1,6 @@
 from typing import NamedTuple, List
 
-from domain.constant.CHROMATIC_SCALE import chromatic_scale
+from src.domain.constant.CHROMATIC_SCALE import chromatic_scale
 
 
 class Pitch(NamedTuple):

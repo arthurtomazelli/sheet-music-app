@@ -1,9 +1,9 @@
 from typing import List
 
-from domain.entity.Measure import Measure
-from domain.entity.Note import Note
-from domain.enum.InstrumentTuning import InstrumentTuning
-from domain.value_object.Pitch import Pitch
+from src.domain.entity.Measure import Measure
+from src.domain.entity.Note import Note
+from src.domain.enum.InstrumentTuning import InstrumentTuning
+from src.domain.value_object.Pitch import Pitch
 
 
 class Track:

@@ -1,6 +1,6 @@
 from typing import List
 
-from domain.entity.Track import Track
+from src.domain.entity.Track import Track
 
 
 class Song:

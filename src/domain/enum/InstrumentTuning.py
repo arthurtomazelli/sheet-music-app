@@ -1,6 +1,6 @@
 from enum import Enum
 
-from domain.value_object.Pitch import Pitch
+from src.domain.value_object.Pitch import Pitch
 
 
 class InstrumentTuning(Enum):
