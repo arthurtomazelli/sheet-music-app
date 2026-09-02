@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 from src.domain.entity.Measure import Measure
 from src.domain.entity.Note import Note
@@ -7,11 +7,14 @@ from src.domain.value_object.Pitch import Pitch
 
 
 class Track:
-    def __init__(self, name: str, instrument: InstrumentTuning):
+    def __init__(self, name: str,
+                 measures: List[Measure],
+                 instrument: InstrumentTuning,
+                 tuning: Optional[List[Pitch]] = None):
         self.name = name
         self.instrument = instrument
-        self.tuning: List[Pitch] = instrument.value.copy()
-        self.measures: List[Measure] = []
+        self.tuning: List[Pitch] = tuning if tuning is not None else instrument.value.copy()
+        self.measures: List[Measure] = measures
 
     def down_tune(self):
         self.change_tuning(-1)
@@ -32,3 +35,11 @@ class Track:
     def get_pitch(self, note: Note) -> Pitch:
         open_string_pitch = self.tuning[note.string]
         return Pitch.shift(open_string_pitch, note.fret)
+
+    @classmethod
+    def from_dict(cls, data: dict) -> "Track":
+        return cls(name=data["name"],
+                   measures=[Measure.from_dict(m) for m in data["measures"]],
+                   instrument=InstrumentTuning[data["instrument"]],
+                   tuning=[Pitch.from_name(n) for n in data["tuning"]] if "tuning" in data else None
+        )

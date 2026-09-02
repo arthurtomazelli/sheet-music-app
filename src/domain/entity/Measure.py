@@ -1,6 +1,8 @@
 from fractions import Fraction
 from typing import List, Optional, Final
 
+from src.domain.entity.Beat import Beat
+from src.domain.entity.Rest import Rest
 from src.domain.entity.RhythmicEvent import RhythmicEvent
 from src.domain.value_object.TimeSignature import TimeSignature
 
@@ -31,3 +33,15 @@ class Measure:
         duration_sum += event.duration.value if event else self.ZERO_VALUE_FRACTION
 
         return duration_sum
+
+    @classmethod
+    def from_dict(cls, data: dict) -> "Measure":
+        measure: Measure = cls(time_signature=TimeSignature.from_dict(data["time_signature"]))
+
+        for rhythmic_event in data["rhythmic_events"]:
+            if rhythmic_event["type"] == "beat":
+                measure.add_rhythmic_event(Beat.from_dict(rhythmic_event))
+            else:
+                measure.add_rhythmic_event(Rest.from_dict(rhythmic_event))
+
+        return measure
